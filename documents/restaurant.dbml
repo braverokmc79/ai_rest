@@ -1,0 +1,98 @@
+Table Article {
+  id int [pk, note: '기본키']
+  title varchar(100) [note: '게시글 제목']
+  preview_image varchar(255) [note: '미리보기 이미지 경로']
+  content text [note: '본문 내용']
+  show_at_index boolean [note: '메인페이지 노출 여부']
+  is_published boolean [note: '게시 여부']
+  created_at datetime [note: '생성일']
+  modified_at datetime [note: '수정일']
+}
+
+Table Restaurant {
+  id int [pk, note: '기본키']
+  name varchar(100) [note: '음식점 이름']
+  branch_name varchar(100) [note: '지점명']
+  description text [note: '설명']
+  address varchar(255) [note: '주소']
+  feature varchar(255) [note: '특징 요약']
+  is_closed boolean [note: '폐업 여부']
+  latitude decimal(16,12) [note: '위도']
+  longitude decimal(16,12) [note: '경도']
+  phone varchar(16) [note: '전화번호 (E.164 포맷)']
+  rating decimal(3,2) [note: '평점']
+  rating_count int [note: '평가 수']
+  start_time time [note: '영업 시작 시간']
+  end_time time [note: '영업 종료 시간']
+  last_order_time time [note: '라스트 오더 시간']
+  category int [ref: > RestaurantCategory.id, note: '가게 카테고리']
+}
+
+Table CuisineType {
+  id int [pk, note: '기본키']
+  name varchar(20) [note: '음식 종류 이름']
+}
+
+Table RestaurantCategory {
+  id int [pk, note: '기본키']
+  name varchar(20) [note: '카테고리 이름']
+  cuisine_type int [ref: > CuisineType.id, note: '연결된 음식 종류']
+}
+
+Table RestaurantImage {
+  id int [pk]
+  restaurant int [ref: > Restaurant.id, note: '이미지 소속 레스토랑']
+  is_representative boolean [note: '대표 이미지 여부']
+  "order" int [note: '정렬 순서']
+  name varchar(100) [note: '이미지 이름']
+  image varchar(100) [note: '이미지 경로']
+  created_at datetime [note: '생성일']
+  updated_at datetime [note: '수정일']
+}
+
+Table RestaurantMenu {
+  id int [pk]
+  restaurant int [ref: > Restaurant.id, note: '해당 메뉴의 레스토랑']
+  name varchar(100) [note: '메뉴 이름']
+  price int [note: '가격']
+  image varchar(100) [note: '메뉴 이미지']
+  created_at datetime [note: '생성일']
+  updated_at datetime [note: '수정일']
+}
+
+Table Review {
+  id int [pk]
+  title varchar(100) [note: '리뷰 제목']
+  author varchar(100) [note: '작성자']
+  profile_image varchar(100) [note: '프로필 이미지 경로']
+  content text [note: '리뷰 내용']
+  rating smallint [note: '평점 (1~5점)']
+  restaurant int [ref: > Restaurant.id, note: '리뷰 대상 레스토랑']
+  social_channel int [ref: > SocialChannel.id, note: '소셜 채널']
+  created_at datetime [note: '생성일']
+  updated_at datetime [note: '수정일']
+}
+
+Table ReviewImage {
+  id int [pk]
+  review int [ref: > Review.id, note: '리뷰 ID']
+  name varchar(100) [note: '이미지 이름']
+  image varchar(100) [note: '이미지 경로']
+  created_at datetime [note: '생성일']
+  updated_at datetime [note: '수정일']
+}
+
+Table SocialChannel {
+  id int [pk]
+  name varchar(100) [note: '소셜 채널 이름']
+}
+
+Table Tag {
+  id int [pk]
+  name varchar(100) [note: '태그 이름']
+}
+
+Table Restaurant_Tag {
+  restaurant_id int [ref: > Restaurant.id, note: '레스토랑 ID']
+  tag_id int [ref: > Tag.id, note: '태그 ID']
+}
