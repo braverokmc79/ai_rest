@@ -16,8 +16,8 @@ class Article(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name = "칼럼"
-        verbose_name_plural = "칼럼"
+        verbose_name = "칼럼(Article)"
+        verbose_name_plural = "칼럼(Articles)"
 
     def __str__(self):
         return f"{self.id} - {self.title}"
@@ -61,8 +61,8 @@ class Restaurant(models.Model):
     tags = models.ManyToManyField("Tag", blank=True, help_text="연결된 태그")
 
     class Meta:
-        verbose_name = "레스토랑"
-        verbose_name_plural = "레스토랑"
+        verbose_name = "레스토랑(Restaurant)"
+        verbose_name_plural = "레스토랑(Restaurants)"
 
     def __str__(self):
         return f"{self.name} {self.branch_name}" if self.branch_name else f"{self.name}"
@@ -73,8 +73,8 @@ class CuisineType(models.Model):
     name = models.CharField("이름", max_length=20, help_text="음식 종류명")
 
     class Meta:
-        verbose_name = "음식 종류"
-        verbose_name_plural = "음식 종류"
+        verbose_name = "음식 종류(CuisineType)"
+        verbose_name_plural = "음식 종류(CuisineTypes)"
 
     def __str__(self):
         return self.name
@@ -92,8 +92,8 @@ class RestaurantCategory(models.Model):
     )
 
     class Meta:
-        verbose_name = "가게 카테고리"
-        verbose_name_plural = "가게 카테고리"
+        verbose_name = "가게 카테고리(RestaurantCategory)"
+        verbose_name_plural = "가게 카테고리(RestaurantCategories)"
 
     def __str__(self):
         return self.name
@@ -112,8 +112,8 @@ class RestaurantImage(models.Model):
     updated_at = models.DateTimeField("수정일", auto_now=True, db_index=True)
 
     class Meta:
-        verbose_name = "가게 이미지"
-        verbose_name_plural = "가게 이미지"
+        verbose_name = "가게 이미지(RestaurantImage)"
+        verbose_name_plural = "가게 이미지(RestaurantImages)"
 
     def __str__(self):
         return f"{self.id}:{self.image}"
@@ -138,8 +138,8 @@ class RestaurantMenu(models.Model):
     updated_at = models.DateTimeField("수정일", auto_now=True, db_index=True)
 
     class Meta:
-        verbose_name = "가게 메뉴"
-        verbose_name_plural = "가게 메뉴"
+        verbose_name = "가게 메뉴(RestaurantMenu)"
+        verbose_name_plural = "가게 메뉴(RestaurantMenus)"
 
     def __str__(self):
         return self.name
@@ -170,19 +170,19 @@ class Review(models.Model):
     updated_at = models.DateTimeField("수정일", auto_now=True, db_index=True)
 
     class Meta:
-        verbose_name = "리뷰"
-        verbose_name_plural = "리뷰"
-        ordering = ["-created_at"]
+        verbose_name = "리뷰(Review)"           # 단수 이름 (관리자 페이지 등에서 사용)
+        verbose_name_plural = "리뷰(Reviews)"    # 복수 이름
+        ordering = ["-created_at"]      # 기본 정렬: 최신순
 
     def __str__(self):
         return f"{self.author}:{self.title}"
 
     @property
-    def restaurant_name(self):
+    def restaurant_name(self):    #연결된 음식점 객체의 이름만 바로 review.restaurant_name으로 접근 가능
         return self.restaurant.name
 
     @property
-    def content_partial(self):
+    def content_partial(self):   # Review.content_partial 사용 시 자동으로 잘린 요약 내용이 반환됨
         return self.content[:20]
 
 
@@ -195,8 +195,8 @@ class ReviewImage(models.Model):
     updated_at = models.DateTimeField("수정일", auto_now=True, db_index=True)
 
     class Meta:
-        verbose_name = "리뷰이미지"
-        verbose_name_plural = "리뷰이미지"
+        verbose_name = "리뷰이미지(ReviewImage)"
+        verbose_name_plural = "리뷰이미지(ReviewImages)"
 
     def __str__(self):
         return f"{self.id}:{self.image}"
@@ -207,8 +207,8 @@ class SocialChannel(models.Model):
     name = models.CharField("이름", max_length=100, help_text="SNS 채널명")
 
     class Meta:
-        verbose_name = "소셜채널"
-        verbose_name_plural = "소셜채널"
+        verbose_name = "소셜채널(SocialChannel)"
+        verbose_name_plural = "소셜채널(SocialChannels)"
 
     def __str__(self):
         return self.name
@@ -219,8 +219,8 @@ class Tag(models.Model):
     name = models.CharField("이름", max_length=100, help_text="태그 이름")
 
     class Meta:
-        verbose_name = "태그"
-        verbose_name_plural = "태그"
+        verbose_name = "태그(Tag)"
+        verbose_name_plural = "태그(Tags)"
 
     def __str__(self):
         return self.name
