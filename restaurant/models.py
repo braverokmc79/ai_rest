@@ -224,3 +224,22 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+
+
+class Region(models.Model):
+    sido = models.CharField("시도", max_length=50)
+    sigungu = models.CharField("시군구", max_length=50)
+    eupmyeondong = models.CharField("읍면동", max_length=50)
+
+    class Meta:
+        verbose_name = "지역(Region)"
+        verbose_name_plural = "지역(Regions)"
+
+    def __str__(self):
+        return f"{self.sido} {self.sigungu} {self.eupmyeondong}"
+    
+    
+    
+    
+    
