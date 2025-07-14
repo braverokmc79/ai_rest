@@ -19,17 +19,32 @@ else:
     load_dotenv(dotenv_path=BASE_DIR / ".env.dev", override=True)
 
 
-if os.environ.get('GITHUB_ACTIONS') == 'true':
-    # CI 환경에서는 SQLite 사용
+# ✅ Github Actions & 테스트 환경에서는 SQLite 사용
+if os.environ.get('GITHUB_ACTIONS') == 'true' or os.environ.get("TEST"):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-
-
-
+else:
+    # 🌱 개발/운영 환경 MySQL
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": os.environ.get("DB_NAME"),
+            "USER": os.environ.get("DB_USER"),
+            "PASSWORD": os.environ.get("DB_PASSWORD"),
+            "HOST": os.environ.get("DB_HOST"),
+            "PORT": os.environ.get("DB_PORT"),
+            "OPTIONS": {
+                "charset": "utf8mb4",
+                "init_command": "SET NAMES utf8mb4",
+            }
+        }
+    }
+    
+    
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -96,29 +111,6 @@ WSGI_APPLICATION = "proj.wsgi.application"
 # }
 
 
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": os.environ.get("DB_NAME"),
-        "USER": os.environ.get("DB_USER"),
-        "PASSWORD": os.environ.get("DB_PASSWORD"),
-        "HOST": os.environ.get("DB_HOST"),
-        "PORT": os.environ.get("DB_PORT"),
-        "OPTIONS": {
-	        "charset": "utf8mb4",
-	        "init_command": "SET NAMES utf8mb4",
-        }
-    }
-}
-# 테스트 환경에서는 SQLite로 대체
-if os.environ.get("TEST"):
-    DATABASES = {
-        "default": {
-            "ENGINE":"django.db.backends.sqlite3",
-            "NAME":BASE_DIR / "db.sqlite3",
-        }
-    }
 
 
 # Password validation
