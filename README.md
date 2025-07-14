@@ -10,23 +10,70 @@
 ---
 
 
+# 🚀 AI REST Backend 프로젝트 README
 
-## 📦 AI Restaurant Backend
+## 📦 Docker Compose 실행 방법
 
+1. **Docker 이미지 빌드 및 컨테이너 실행**
 
+   ```bash
+   docker compose up --build
+   ```
 
+   * `--build` 옵션은 변경된 코드로 이미지를 다시 빌드합니다.
+   * 백그라운드 실행하려면:
 
-### 🔖 환경 변수 설정
+     ```bash
+     docker compose up -d
+     ```
 
-**`.env`**
+2. **컨테이너 상태 확인**
 
-```bash
+   ```bash
+   docker ps
+   ```
+
+3. **컨테이너에 접속하기 (bash)**
+
+   ```bash
+   docker exec -it ai_rest_backend bash
+   ```
+
+---
+
+## 🛠 슈퍼유저 생성 방법
+
+1. 컨테이너에 접속:
+
+   ```bash
+   docker exec -it ai_rest_backend bash
+   ```
+
+2. Django migrate 실행 (최초 실행 시)
+
+   ```bash
+   python manage.py migrate
+   ```
+
+3. 슈퍼유저 생성:
+
+   ```bash
+   python manage.py createsuperuser
+   ```
+
+---
+
+## 🔖 환경변수 설정
+
+### .env
+
+```
 ENV=dev
 ```
 
-**`.env.dev`**
+### .env.dev
 
-```bash
+```
 DJANGO_SECRET_KEY=your-secret-key
 DJANGO_DEBUG=True
 
@@ -42,107 +89,52 @@ DB_PORT=3306
 
 ---
 
-### 🐳 Docker Compose 실행 방법
+## ⚠️ Windows에서 entrypoint.sh CRLF 문제 해결
 
-1️⃣ **도커 이미지 빌드**
-최초 실행 시 또는 코드 변경 후 이미지를 다시 빌드하려면:
+Windows에서는 `entrypoint.sh` 파일의 줄바꿈이 `CRLF`로 저장되면 컨테이너 실행 시 오류가 발생합니다:
 
-```bash
-docker compose build
+```
+bash: ./entrypoint.sh: /bin/bash^M: bad interpreter
 ```
 
-캐시 없이 강제로 새로 빌드하려면:
+### ✅ 해결 방법
 
-```bash
-docker compose build --no-cache
-```
+1. **Git 설정 변경 (권장)**
 
-2️⃣ **도커 컨테이너 실행**
+   ```bash
+   git config --global core.autocrlf input
+   ```
 
-```bash
-docker compose up
-```
+2. **이미 변경된 파일 수정**
 
-백그라운드 실행 (detached mode):
+   * VSCode에서 오른쪽 아래 `CRLF` 클릭 → `LF` 선택 → 저장
+   * CLI에서 한 번에 수정:
 
-```bash
-docker compose up -d
-```
+     ```bash
+     sed -i 's/\r$//' entrypoint.sh
+     ```
 
-3️⃣ **컨테이너 중지**
+3. **`.gitattributes`로 고정 (추가 권장)**
 
-```bash
-docker compose down
-```
+   `.gitattributes` 파일에 아래 내용 추가:
+
+   ```gitattributes
+   *.sh text eol=lf
+   ```
+
+   이 설정은 `.sh` 파일을 항상 LF로 유지합니다.
 
 ---
 
-### 👤 Django 슈퍼유저 생성
+## 📂 기타 유용한 명령어
 
-도커 컨테이너가 실행 중일 때 다음 명령어로 Django 백엔드 컨테이너에 접속합니다:
+* 로그 확인:
 
-```bash
-docker exec -it ai_rest_backend bash
-```
+  ```bash
+  docker compose logs -f
+  ```
+* 컨테이너 중지:
 
-컨테이너 내부에서 Django 명령어 실행:
-
-```bash
-python manage.py createsuperuser
-```
-
-프롬프트에 따라 사용자 이름, 이메일, 비밀번호를 입력하면 됩니다.
-
----
-
-### 📋 도커 컨테이너 관리
-
-#### ✅ 실행 중인 컨테이너 확인
-
-```bash
-docker ps
-```
-
-#### ✅ 모든 컨테이너 확인 (중지된 것도 포함)
-
-```bash
-docker ps -a
-```
-
-#### ✅ 특정 컨테이너 로그 보기
-
-```bash
-docker logs ai_rest_backend
-```
-
----
-
-### 🛠 컨테이너에 접속하기
-
-**백엔드 컨테이너 접속:**
-
-```bash
-docker exec -it ai_rest_backend bash
-```
-
-**DB(MySQL) 컨테이너 접속:**
-
-```bash
-docker exec -it ai_restaurant_db bash
-```
-
----
-
-### 🌐 개발 서버 접속
-
-컨테이너 실행 후 브라우저에서 접속:
-
-```
-http://localhost:8000
-```
-
-관리자 페이지:
-
-```
-http://localhost:8000/admin/
-```
+  ```bash
+  docker compose down
+  ```

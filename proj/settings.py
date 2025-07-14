@@ -19,6 +19,15 @@ else:
     load_dotenv(dotenv_path=BASE_DIR / ".env.dev", override=True)
 
 
+if os.environ.get('GITHUB_ACTIONS') == 'true':
+    # CI 환경에서는 SQLite 사용
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
 
 
 # Quick-start development settings - unsuitable for production
