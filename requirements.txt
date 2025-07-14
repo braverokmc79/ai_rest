@@ -47,3 +47,7 @@ traitlets==5.14.3
 tzdata==2025.2
 virtualenv==20.31.2
 wcwidth==0.2.13
+mysqlclient==2.2.4
+pymysql==1.1.1
+python-dotenv==1.0.1
+cryptography>=42.0
