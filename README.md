@@ -17,8 +17,18 @@
 1. **Docker 이미지 빌드 및 컨테이너 실행**
 
    ```bash
-   docker compose up --build
+
+   docker compose up --build --no-cache
+
+
+  # 클린하게 전체 재시작
+   docker compose down --volumes --remove-orphans
+   docker compose up --build --no-cache
+
    ```
+
+
+
 
    * `--build` 옵션은 변경된 코드로 이미지를 다시 빌드합니다.
    * 백그라운드 실행하려면:
