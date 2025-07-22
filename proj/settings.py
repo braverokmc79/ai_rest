@@ -44,18 +44,47 @@ else:
         }
     }
     
+# Use Amazon S3 for storage for uploaded media files if not debugging
+if os.environ.get("S3_BUCKET"):
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.s3.S3Storage",
+            "OPTIONS": {
+                "bucket_name": os.environ.get("S3_BUCKET"),
+                "region_name": os.environ.get("S3_REGION", "ap-northeast-2"),
+                "custom_domain": os.environ.get("S3_CUSTOM_DOMAIN"),
+                "location": "media",
+                "default_acl": "public-read",
+                "querystring_auth": False,
+            },
+        },
+        "staticfiles": {
+            "BACKEND": "storages.backends.s3.S3Storage",
+            "OPTIONS": {
+                "bucket_name": os.environ.get("S3_BUCKET"),
+                "region_name": os.environ.get("S3_REGION", "ap-northeast-2"),
+                "custom_domain": os.environ.get("S3_CUSTOM_DOMAIN"),
+                "location": "static",
+                "default_acl": "public-read",
+                "querystring_auth": False,
+            },
+        },
+    }    
+    
     
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
+# 강력한 시크릿 키 생성 (예시)
+#python -c "import secrets; print(secrets.token_urlsafe(64))"
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-!0zx&iw(rt4@=yuelgnm#5i6#cba+^2!urq6^_x5rs628-%vgm"
+SECRET_KEY = "jXhxB_DiqtanAczI_whLI1_Xzs8GdwVkyuiI_5KE4ApUCQPH6fa2Bg7QvEOyLOWwryWzW60_lruVQvAfs_Db8Q"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = []
 
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost").split(",")
 
 # Application definition
 
@@ -153,6 +182,24 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+
+
+
+# HSTS 설정 (1년)
+# SECURE_HSTS_SECONDS = 31536000
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True
+# # HTTPS 강제 리다이렉트
+# SECURE_SSL_REDIRECT = True
+# # 쿠키를 HTTPS 전용으로만
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+
+#SECURE_HSTS_SECONDS = 31536000  # 1년 권장
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 
 print("DB_HOST:", os.environ.get("DB_HOST"))

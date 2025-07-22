@@ -25,7 +25,7 @@ services:
       MYSQL_USER: ai_restaurant
       MYSQL_PASSWORD: ai_restaurant
     ports:
-      - "3306:3306"
+      - "3305:3306"
 
 volumes:
   mysql_data:

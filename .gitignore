@@ -130,3 +130,8 @@ docker-compose.override.yml
 
 
 설명.md
+
+
+/static
+/media/
+.vscode/

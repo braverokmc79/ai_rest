@@ -39,6 +39,20 @@
    docker exec -it ai_rest_backend bash
    ```
 
+
+---
+
+
+.env 시크릿 키 생성
+``` 
+# Linux/macOS Bash 환경 (UUID 기반)
+
+openssl rand -hex 32
+
+```
+
+
+
 ---
 
 ## 🛠 슈퍼유저 생성 방법
@@ -138,3 +152,161 @@ bash: ./entrypoint.sh: /bin/bash^M: bad interpreter
   ```bash
   docker compose down
   ```
+
+---
+
+
+
+## DBeaver에서 Docker MySQL 접속 방법
+
+당신의 `docker-compose.yml` 설정 기준으로, MySQL 컨테이너는 다음과 같이 구성되어 있습니다:
+
+```yaml
+db:
+  image: mysql:8.3
+  container_name: ai_restaurant_db
+  environment:
+    MYSQL_ROOT_PASSWORD: rootpass123
+    MYSQL_DATABASE: ai_restaurant
+    MYSQL_USER: ai_restaurant
+    MYSQL_PASSWORD: ai_restaurant
+  ports:
+    - "3305:3306"
+```
+
+이 설정에 따라 DBeaver에서 접속하기 위한 정보는 다음과 같습니다.
+
+---
+
+### ✅ DBeaver 접속 정보
+
+| 항목       | 값                          |
+| -------- | -------------------------- |
+| DB 타입    | MySQL                      |
+| Host     | `127.0.0.1` 또는 `localhost` |
+| Port     | `3305` (외부 포트)             |
+| Database | `ai_restaurant`            |
+| User     | `ai_restaurant`            |
+| Password | `ai_restaurant`            |
+
+---
+
+
+
+## DBeaver에서 Docker MySQL 접속 방법
+
+당신의 `docker-compose.yml` 설정 기준으로, MySQL 컨테이너는 다음과 같이 구성되어 있습니다:
+
+```yaml
+db:
+  image: mysql:8.3
+  container_name: ai_restaurant_db
+  environment:
+    MYSQL_ROOT_PASSWORD: rootpass123
+    MYSQL_DATABASE: ai_restaurant
+    MYSQL_USER: ai_restaurant
+    MYSQL_PASSWORD: ai_restaurant
+  ports:
+    - "3305:3306"
+```
+
+이 설정에 따라 DBeaver에서 접속하기 위한 정보는 다음과 같습니다.
+
+---
+
+### ✅ DBeaver 접속 정보
+
+| 항목       | 값                          |
+| -------- | -------------------------- |
+| DB 타입    | MySQL                      |
+| Host     | `127.0.0.1` 또는 `localhost` |
+| Port     | `3305` (외부 포트)             |
+| Database | `ai_restaurant`            |
+| User     | `ai_restaurant`            |
+| Password | `ai_restaurant`            |
+
+---
+
+### ✅ DBeaver 접속 절차
+
+1. DBeaver 실행
+2. 좌측 상단 `Database > New Database Connection` 클릭
+3. DB 종류 선택: `MySQL`
+4. "Next" 클릭
+5. 아래 정보 입력:
+   - **Server Host**: `127.0.0.1`
+   - **Port**: `3305`
+   - **Database**: `ai_restaurant`
+   - **Username**: `ai_restaurant`
+   - **Password**: `ai_restaurant`
+6. `Test Connection` 클릭해서 연결 확인
+7. 성공하면 "Finish"
+
+---
+
+### ⚡ 접속 안 될 경우 점검 사항
+
+- **컨테이너가 실행 중인지 확인**
+
+  ```bash
+  docker ps
+  ```
+
+  MySQL 컨테이너(`ai_restaurant_db`)가 떠 있어야 함
+
+- **포트 충돌 여부 확인** 로컬에 다른 MySQL이 `3305`나 `3306`을 사용 중인지 확인
+
+- **Docker에서 MySQL이 완전히 기동되었는지 확인**
+
+  ```bash
+  docker logs ai_restaurant_db
+  ```
+
+  초기화 완료 로그 이후 접속해야 연결됨
+
+---
+
+### 📦 `mysql_data`는 어디에 저장될까?
+
+- `docker-compose.yml`에서 지정된 `mysql_data:/var/lib/mysql` 설정은 다음을 의미:
+  - `mysql_data`는 **Docker 볼륨 이름**입니다.
+  - `/var/lib/mysql`은 MySQL 컨테이너 내부의 데이터 저장 위치입니다.
+- 실제 데이터는 **Docker가 내부적으로 관리하는 볼륨 공간**에 보관됩니다.
+
+#### 🔍 현재 Docker 볼륨 확인
+
+```bash
+docker volume ls
+```
+
+예시 출력:
+
+```
+DRIVER    VOLUME NAME
+local     ai-restaurant_mysql_data
+local     ai_rest_mysql_data
+...
+```
+
+#### 🔍 볼륨 경로 확인
+
+```bash
+docker volume inspect ai-restaurant_mysql_data
+```
+
+예시 결과:
+
+```json
+"Mountpoint": "/var/lib/docker/volumes/ai-restaurant_mysql_data/_data"
+```
+
+> 이 경로는 Linux에서만 직접 접근 가능하며, Windows는 WSL2 또는 Docker Desktop 내부에서 관리됩니다.
+
+---
+
+### ✅ 정리
+
+- `localhost:3305`로 DBeaver에서 Docker MySQL 접속 가능
+- 연결이 안 되면 컨테이너 상태, 포트 충돌, 비밀번호 등 점검 필요
+- 데이터는 `mysql_data`라는 이름의 Docker 볼륨에 안전하게 저장됩니다
+
