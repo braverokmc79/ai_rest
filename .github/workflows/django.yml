@@ -69,6 +69,7 @@ jobs:
           echo "${{ secrets.NGINX_DEPLOY_KEY }}" > private_key.pem
           chmod 600 private_key.pem
 
+          
           # 디렉토리 존재 여부 확인
           ls -al staticfiles || echo "staticfiles not found!"
           ls -al media || echo "media not found!"
