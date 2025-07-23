@@ -63,3 +63,13 @@ jobs:
             docker compose -f docker-compose.prod.yml up -d --build
             docker compose -f docker-compose.prod.yml exec ai_rest_backend python manage.py migrate --noinput
             docker compose -f docker-compose.prod.yml exec ai_rest_backend python manage.py collectstatic --noinput
+
+      - name: Copy static/media files to Nginx server
+        run: |
+          echo "${{ secrets.NGINX_DEPLOY_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+
+          scp -i private_key.pem -o StrictHostKeyChecking=no -r staticfiles/ ${{ secrets.NGINX_USER }}@${{ secrets.NGINX_HOST }}:/home/nextjs/static/
+          scp -i private_key.pem -o StrictHostKeyChecking=no -r media/ ${{ secrets.NGINX_USER }}@${{ secrets.NGINX_HOST }}:/home/nextjs/media/
+
+          rm -f private_key.pem
